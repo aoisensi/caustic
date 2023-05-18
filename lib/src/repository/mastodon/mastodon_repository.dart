@@ -1,35 +1,35 @@
 import 'dart:convert';
 
-import 'package:caustic/src/notifier/mastodon/status_notifier.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import '../../notifier/mastodon/account_notifier.dart';
-
 final mastodonAccessTokenProvider =
-    Provider((ref) => "5r1PZkvDiDjq9-zBvefjG2snU7-jtTTHCT7KaDeENy8");
+    Provider((ref) => dotenv.env['ALPHA_TOKEN']!);
 final mastodonDomainProvider = Provider((ref) => "social.vivaldi.net");
 
 class MastodonRepository {
   MastodonRepository(this._ref);
   final Ref _ref;
 
-  Future<List<String>> getPublicTimeline() async {
+  Future<List<dynamic>> getPublicTimeline() async {
     final response = await _get('/api/v1/timelines/public');
-    final json = _decode(response);
-    return MastodonStatusNotifier.cacheList(_ref, json);
+    return _decode(response);
   }
 
-  Future<String> getAccount({required String id}) async {
+  Future<List<dynamic>> getHomeTimeline() async {
+    final response = await _get('/api/v1/timelines/home');
+    return _decode(response);
+  }
+
+  Future<dynamic> getAccount({required String id}) async {
     final response = await _get('/api/v1/accounts/$id');
-    final json = _decode(response);
-    return MastodonAccountNotifier.cache(_ref, json);
+    return _decode(response);
   }
 
-  Future<String> getStatus({required String id}) async {
+  Future<dynamic> getStatus({required String id}) async {
     final response = await _get('/api/v1/statuses/$id');
-    final json = _decode(response);
-    return MastodonStatusNotifier.cache(_ref, json);
+    return _decode(response);
   }
 
   Future<http.Response> _get(String path, {Map<String, dynamic>? params}) {
