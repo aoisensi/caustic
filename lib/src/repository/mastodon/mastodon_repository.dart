@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,10 +8,19 @@ import 'package:http/http.dart' as http;
 final mastodonAccessTokenProvider =
     Provider((ref) => dotenv.env['ALPHA_TOKEN']!);
 final mastodonDomainProvider = Provider((ref) => "social.vivaldi.net");
+final mastodonRepositoryProvider = Provider(
+  (ref) {
+    final token = ref.read(mastodonAccessTokenProvider);
+    final domain = ref.read(mastodonDomainProvider);
+    return MastodonRepository(domain, token);
+  },
+  dependencies: [mastodonAccessTokenProvider, mastodonDomainProvider],
+);
 
 class MastodonRepository {
-  MastodonRepository(this._ref);
-  final Ref _ref;
+  MastodonRepository(this._domain, this._token);
+  final String _domain;
+  final String _token;
 
   Future<List<dynamic>> getPublicTimeline() async {
     final response = await _get('/api/v1/timelines/public');
@@ -33,7 +43,7 @@ class MastodonRepository {
   }
 
   Future<http.Response> _get(String path, {Map<String, dynamic>? params}) {
-    final uri = Uri.https(_domain, path, params);
+    final uri = _uri(path, params: params);
     return http.get(uri, headers: {'Authorization': 'Bearer $_token'});
   }
 
@@ -45,6 +55,6 @@ class MastodonRepository {
     }
   }
 
-  String get _token => _ref.read(mastodonAccessTokenProvider);
-  String get _domain => _ref.read(mastodonDomainProvider);
+  Uri _uri(String path, {Map<String, dynamic>? params}) =>
+      Uri.https(_domain, path, params);
 }

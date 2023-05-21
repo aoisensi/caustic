@@ -18,7 +18,7 @@ class MastodonAccountNotifier
 
   Future<void> fetch() async {
     try {
-      await MastodonRepository(ref).getAccount(id: id);
+      await ref.read(mastodonRepositoryProvider).getAccount(id: id);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }

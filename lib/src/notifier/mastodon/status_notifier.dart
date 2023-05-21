@@ -20,7 +20,7 @@ class MastodonStatusNotifier
 
   Future<void> fetch() async {
     try {
-      await MastodonRepository(ref).getStatus(id: id);
+      await ref.read(mastodonRepositoryProvider).getStatus(id: id);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }

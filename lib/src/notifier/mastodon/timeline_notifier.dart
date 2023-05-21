@@ -33,6 +33,10 @@ abstract class MastodonTimelineNotifierBase
 
   @override
   FutureOr<List<String>> build() {
-    return getter(MastodonRepository(ref));
+    return getter(ref.read(mastodonRepositoryProvider));
+  }
+
+  void addToLatest(String id) {
+    state = AsyncValue.data([id, ...(state.value ?? [])]);
   }
 }
