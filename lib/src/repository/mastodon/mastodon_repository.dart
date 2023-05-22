@@ -42,9 +42,34 @@ class MastodonRepository {
     return _decode(response);
   }
 
+  Future<dynamic> postStatusFavourite({required String id}) async {
+    final response = await _post('/api/v1/statuses/$id/favourite');
+    return _decode(response);
+  }
+
+  Future<dynamic> postStatusUnfavourite({required String id}) async {
+    final response = await _post('/api/v1/statuses/$id/unfavourite');
+    return _decode(response);
+  }
+
+  Future<dynamic> postStatusReblog({required String id}) async {
+    final response = await _post('/api/v1/statuses/$id/reblog');
+    return _decode(response);
+  }
+
+  Future<dynamic> postStatusUnreblog({required String id}) async {
+    final response = await _post('/api/v1/statuses/$id/unreblog');
+    return _decode(response);
+  }
+
   Future<http.Response> _get(String path, {Map<String, dynamic>? params}) {
     final uri = _uri(path, params: params);
     return http.get(uri, headers: {'Authorization': 'Bearer $_token'});
+  }
+
+  Future<http.Response> _post(String path, {Map<String, dynamic>? params}) {
+    final uri = _uri(path, params: params);
+    return http.post(uri, headers: {'Authorization': 'Bearer $_token'});
   }
 
   dynamic _decode(http.Response response) {

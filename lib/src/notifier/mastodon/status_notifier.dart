@@ -20,7 +20,50 @@ class MastodonStatusNotifier
 
   Future<void> fetch() async {
     try {
-      await ref.read(mastodonRepositoryProvider).getStatus(id: id);
+      final json = await ref.read(mastodonRepositoryProvider).getStatus(id: id);
+      cache(ref, json);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> favourite() async {
+    try {
+      final json = await ref
+          .read(mastodonRepositoryProvider)
+          .postStatusFavourite(id: id);
+      cache(ref, json);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> unfavourite() async {
+    try {
+      final json = await ref
+          .read(mastodonRepositoryProvider)
+          .postStatusUnfavourite(id: id);
+      cache(ref, json);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> reblog() async {
+    try {
+      final json =
+          await ref.read(mastodonRepositoryProvider).postStatusReblog(id: id);
+      cache(ref, json);
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
+  }
+
+  Future<void> unreblog() async {
+    try {
+      final json =
+          await ref.read(mastodonRepositoryProvider).postStatusUnreblog(id: id);
+      cache(ref, json);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
@@ -31,6 +74,7 @@ class MastodonStatusNotifier
     ref.read(mastodonStatusProvider(status.id).notifier).state =
         AsyncValue.data(status);
     MastodonAccountNotifier.cache(ref, json['account']);
+    if (status.reblogId != null) cache(ref, json['reblog']);
     return status.id;
   }
 
