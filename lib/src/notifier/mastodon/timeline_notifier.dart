@@ -39,4 +39,10 @@ abstract class MastodonTimelineNotifierBase
   void addToLatest(String id) {
     state = AsyncValue.data([id, ...(state.value ?? [])]);
   }
+
+  void delete(String payload) {
+    state = AsyncValue.data(
+      (state.value ?? []).where((id) => id != payload).toList(),
+    );
+  }
 }

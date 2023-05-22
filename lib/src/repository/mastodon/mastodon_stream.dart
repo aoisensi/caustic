@@ -25,14 +25,24 @@ final mastodonStreamProvider = StreamProvider(
     ref.onDispose(ws.sink.close);
     await for (final json in ws.stream) {
       final data = jsonDecode(json);
-      final payload = jsonDecode(data['payload']);
       switch (data['event']) {
         case 'update':
+          final payload = jsonDecode(data['payload']);
           final id = MastodonStatusNotifier.cache(ref, payload);
           for (final stream in data['stream']) {
             final provider = _timelineProviders[stream];
             if (provider == null) continue;
             ref.read(provider.notifier).addToLatest(id);
+          }
+        case 'status.update':
+          final payload = jsonDecode(data['payload']);
+          MastodonStatusNotifier.cache(ref, payload);
+        case 'delete':
+          final payload = data['payload'];
+          for (final stream in data['stream']) {
+            final provider = _timelineProviders[stream];
+            if (provider == null) continue;
+            ref.read(provider.notifier).delete(payload as String);
           }
       }
       yield null;
