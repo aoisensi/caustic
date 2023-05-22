@@ -17,7 +17,7 @@ class AvatarView extends StatelessWidget {
       height: size,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size),
+        borderRadius: BorderRadius.circular(size / 8),
       ),
       child: Image.network(
         url,
