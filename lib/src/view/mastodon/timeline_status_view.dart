@@ -24,8 +24,15 @@ class TimelineStatusView extends ConsumerWidget {
         children: [
           ListTile(
             leading: AvatarView(url: account.avatar),
-            title: Text(account.displayName),
-            subtitle: Text('@${account.acct}'),
+            title: Text(
+              account.displayName,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+            ),
+            subtitle: Text(
+              '@${account.acct}',
+              maxLines: 1,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

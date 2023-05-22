@@ -12,13 +12,9 @@ class AvatarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size / 8),
-      ),
       child: Image.network(
         url,
         loadingBuilder: (context, child, loadingProgress) {
@@ -27,6 +23,7 @@ class AvatarView extends StatelessWidget {
           }
           return const Center(child: CircularProgressIndicator());
         },
+        filterQuality: FilterQuality.high,
       ),
     );
   }
