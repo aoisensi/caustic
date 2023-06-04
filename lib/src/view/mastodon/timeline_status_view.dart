@@ -1,7 +1,8 @@
 import 'package:caustic/src/notifier/mastodon/status_notifier.dart';
 import 'package:caustic/src/view/mastodon/avatar_view.dart';
+import 'package:caustic/src/view/mastodon/status_content_view.dart';
+import 'package:caustic/src/view/relative_timer_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../notifier/mastodon/account_notifier.dart';
@@ -29,14 +30,22 @@ class TimelineStatusView extends ConsumerWidget {
               overflow: TextOverflow.fade,
               maxLines: 1,
             ),
-            subtitle: Text(
-              '@${account.acct}',
-              maxLines: 1,
+            subtitle: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '@${account.acct}',
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+                RelativeTimerView(status.createdAt),
+              ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Html(data: status.content),
+            child: StatusContentView(status: status),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

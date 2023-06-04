@@ -1,3 +1,5 @@
+import 'emoji.dart';
+
 class Status {
   final String id;
   final String accountId;
@@ -6,6 +8,8 @@ class Status {
   final String? reblogId;
   final bool favourited;
   final bool reblogged;
+  final DateTime createdAt;
+  final List<Emoji> emojis;
 
   Status({
     required this.id,
@@ -15,6 +19,8 @@ class Status {
     required this.reblogId,
     required this.favourited,
     required this.reblogged,
+    required this.createdAt,
+    required this.emojis,
   });
 
   factory Status.fromJson(Map<String, dynamic> json) {
@@ -26,6 +32,10 @@ class Status {
       reblogId: json['reblog']?['id'],
       favourited: json['favourited'] ?? false,
       reblogged: json['reblogged'] ?? false,
+      createdAt: DateTime.parse(json['created_at']),
+      emojis: (json['emojis'] as List<dynamic>)
+          .map((e) => Emoji.fromJson(e))
+          .toList(),
     );
   }
 }
